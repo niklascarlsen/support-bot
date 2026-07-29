@@ -1,0 +1,60 @@
+{
+  "orders": [
+    {
+      "id": "PW-88421",
+      "customer": "Brennan Huff",
+      "email": "brennan@prestigeworldwide.test",
+      "status": "shipped",
+      "carrier": "Catalina Express Freight",
+      "trackingNumber": "CEF-992011",
+      "items": [
+        {
+          "sku": "YACHT-FANTASY-01",
+          "name": "Boats N Hoes Expansion Pack",
+          "qty": 1
+        },
+        {"sku": "BUNK-SET-QUEEN", "name": "Matching Bunk Bed Sheets", "qty": 2}
+      ],
+      "totalSek": 14990,
+      "placedAt": "2026-07-20T14:22:00+02:00",
+      "estimatedDelivery": "2026-07-31"
+    },
+    {
+      "id": "PW-90310",
+      "customer": "Dale Doback",
+      "email": "dale@prestigeworldwide.test",
+      "status": "processing",
+      "carrier": null,
+      "trackingNumber": null,
+      "items": [
+        {
+          "sku": "DRUM-FILL-PRO",
+          "name": "Surprise Musical Number Kit",
+          "qty": 1
+        }
+      ],
+      "totalSek": 4200,
+      "placedAt": "2026-07-28T09:05:00+02:00",
+      "estimatedDelivery": "2026-08-05"
+    },
+    {
+      "id": "PW-77102",
+      "customer": "Nancy Huff",
+      "email": "nancy@example.test",
+      "status": "delivered",
+      "carrier": "PostNord",
+      "trackingNumber": "PNSE123456789SE",
+      "items": [
+        {
+          "sku": "WAIVER-01",
+          "name": "Imagination Liability Waiver (printed)",
+          "qty": 3
+        }
+      ],
+      "totalSek": 299,
+      "placedAt": "2026-07-01T11:00:00+02:00",
+      "estimatedDelivery": "2026-07-04",
+      "deliveredAt": "2026-07-03T16:40:00+02:00"
+    }
+  ]
+}

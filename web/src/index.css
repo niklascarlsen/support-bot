@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@source '../node_modules/streamdown/dist/*.js';
 
 @theme {
   --font-sans: 'Arimo', ui-sans-serif, system-ui, sans-serif;
@@ -27,6 +28,7 @@ select {
     border-radius: 0px;
   }
 }
+
 
 .chat-open-button {
   opacity: 1;

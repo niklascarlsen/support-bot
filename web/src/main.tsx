@@ -4,6 +4,7 @@ import '@fontsource/arimo/400.css';
 import '@fontsource/arimo/500.css';
 import '@fontsource/arimo/600.css';
 import '@fontsource/arimo/700.css';
+import 'streamdown/styles.css';
 import './index.css';
 import App from './App.tsx';
 
