@@ -27,6 +27,7 @@ export function Input({
         <input
           type='text'
           value={value}
+          maxLength={100}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {

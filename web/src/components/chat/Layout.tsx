@@ -4,7 +4,8 @@ import {MessageList} from './MessageList';
 import {Input} from './Input';
 
 export function Layout({onClose}: {onClose?: () => void}) {
-  const {messages, sendMessage, status, setMessages, error, stop} = useChat();
+  const {messages, sendMessage, status, setMessages, errorText, stop} =
+    useChat();
   const isBusy = status === 'submitted' || status === 'streaming';
 
   return (
@@ -22,10 +23,8 @@ export function Layout({onClose}: {onClose?: () => void}) {
           isWaiting={status === 'submitted'}
           isStreaming={status === 'streaming'}
         />
-        {error && (
-          <p className='px-4 pb-3 text-sm text-red-600'>
-            Something went wrong.
-          </p>
+        {errorText && (
+          <p className='px-4 pb-3 text-sm'>{errorText}</p>
         )}
       </main>
       <Input

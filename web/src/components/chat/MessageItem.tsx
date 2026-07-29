@@ -2,6 +2,15 @@ import type {UIMessage} from 'ai';
 import {Streamdown} from 'streamdown';
 import {REMEND} from './danglingMarkers';
 
+const ANIMATED = {
+  animation: 'fadeIn',
+  sep: 'word',
+  duration: 220,
+  stagger: 0,
+} as const;
+
+const LINK_SAFETY = {enabled: false} as const;
+
 function messageText(message: UIMessage): string {
   return message.parts
     .filter((part) => part.type === 'text')
@@ -43,13 +52,8 @@ export function MessageItem({
           text
         ) : (
           <Streamdown
-            animated={{
-              animation: 'fadeIn',
-              sep: 'word',
-              duration: 220,
-              stagger: 0,
-            }}
-            linkSafety={{enabled: false}}
+            animated={ANIMATED}
+            linkSafety={LINK_SAFETY}
             remend={REMEND}
             isAnimating={isAnimating}
           >

@@ -33,6 +33,20 @@ async function loadOrders(): Promise<Order[]> {
   return data.orders;
 }
 
+function toPublicOrder(order: Order) {
+  return {
+    id: order.id,
+    status: order.status,
+    carrier: order.carrier,
+    trackingNumber: order.trackingNumber,
+    items: order.items.map((item) => ({name: item.name, qty: item.qty})),
+    totalSek: order.totalSek,
+    placedAt: order.placedAt,
+    estimatedDelivery: order.estimatedDelivery,
+    deliveredAt: order.deliveredAt,
+  };
+}
+
 /**
  * Looks up an order from the local fake store (src/data/orders.json).
  * The model has no order data unless it calls this tool.
@@ -41,7 +55,14 @@ export const getOrder = tool({
   description:
     'Fetch order details by order id from the order database. Use this for any question about order status, tracking, items, or delivery. Never invent order data.',
   inputSchema: z.object({
-    orderId: z.string().describe('Order id, e.g. PW-88421'),
+    // The example used to be PW-88421, which is a real order in the data.
+    // The model treated it as a default and looked it up when the user gave
+    // no id at all. Keep the example clearly fake.
+    orderId: z
+      .string()
+      .describe(
+        'Order id exactly as the user wrote it, in the form PW-00000. Ask the user for it instead of guessing.',
+      ),
   }),
   execute: async ({orderId}) => {
     const orders = await loadOrders();
@@ -58,7 +79,7 @@ export const getOrder = tool({
 
     return {
       found: true as const,
-      order,
+      order: toPublicOrder(order),
     };
   },
 });

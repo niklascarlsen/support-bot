@@ -6,9 +6,21 @@ import {chatRoutes} from './routes/chat.ts';
 const port = Number(process.env.PORT ?? 8080);
 const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
 
-const fastify = Fastify({
-  logger: true,
+const isProd = process.env.NODE_ENV === 'production';
 
+const fastify = Fastify({
+  logger: isProd
+    ? true
+    : {
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'HH:MM:ss',
+            ignore: 'pid,hostname',
+          },
+        },
+      },
   forceCloseConnections: true,
 });
 
