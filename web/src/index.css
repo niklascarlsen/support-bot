@@ -29,123 +29,93 @@ select {
   }
 }
 
-
 .chat-open-button {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  /* Delay show until chat close animation has finished */
   transition:
     opacity 220ms ease 220ms,
-    visibility 0s linear 220ms;
-}
-
-:root:has(#chat-modal[open]) .chat-open-button,
-:root:has(#chat-panel.is-open) .chat-open-button {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  /* Hide immediately when chat opens */
-  transition:
-    opacity 220ms ease 0ms,
     visibility 0s linear 0ms;
 }
 
-dialog {
-  position: fixed;
-  inset: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  width: 100%;
-  max-width: none;
-  height: 100dvh;
-  max-height: 100dvh;
-  overflow: hidden;
-  background-color: #fff;
-  color: #0f172a;
-  overscroll-behavior: none;
-  touch-action: none;
-  opacity: 0;
-  /* transform: translateY(16px) scale(0.98);
-  transition:
-    opacity 220ms ease,
-    transform 220ms ease,
-    overlay 220ms allow-discrete,
-    display 220ms allow-discrete; */
-}
-
-dialog > * {
-  height: 100%;
-  min-height: 0;
-}
-
-dialog[open] {
-  opacity: 1;
-  transform: none;
-}
-
-@starting-style {
-  dialog[open] {
+@media (min-width: 768px) {
+  :root:has(#chat-widget[open]) .chat-open-button {
     opacity: 0;
-    /* transform: translateY(16px) scale(0.98); */
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 220ms ease 0ms,
+      visibility 0s linear 0ms;
   }
 }
 
-dialog::backdrop {
-  /* background-color: rgb(15 23 42 / 0.45);
-  opacity: 0;
-  transition:
-    opacity 220ms ease,
-    overlay 220ms allow-discrete,
-    display 220ms allow-discrete; */
-}
-
-dialog[open]::backdrop {
-  opacity: 1;
-}
-
-@starting-style {
-  dialog[open]::backdrop {
-    opacity: 0;
-  }
-}
-
-.chat-panel {
-  position: fixed;
-  top: auto;
-  right: 1rem;
-  bottom: 4rem;
-  left: auto;
-  z-index: 50;
-  width: 460px;
-  height: min(850px, calc(100dvh - 4.5rem));
+/* One element, two modes. showModal() on mobile, show() on desktop. */
+#chat-widget {
   margin: 0;
   padding: 0;
   overflow: hidden;
   background-color: #fff;
   color: #0f172a;
-  border: 1px solid #e2e8f0;
-  border-radius: 2px;
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(16px) scale(0.98);
-  transition:
-    opacity 220ms ease,
-    transform 220ms ease,
-    visibility 220ms ease;
 }
 
-.chat-panel > * {
+#chat-widget > * {
   height: 100%;
   min-height: 0;
 }
 
-.chat-panel.is-open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: none;
+/* Mobile, full screen. No animation. */
+@media (max-width: 767px) {
+  #chat-widget {
+    position: fixed;
+    inset: 0;
+    border: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: 100dvh;
+    overscroll-behavior: none;
+    touch-action: none;
+  }
+}
+
+/* Desktop, a panel beside a page that stays scrollable and usable. */
+@media (min-width: 768px) {
+  #chat-widget {
+    position: fixed;
+    top: auto;
+    right: 1rem;
+    bottom: 4rem;
+    left: auto;
+    z-index: 50;
+    width: 460px;
+    max-width: none;
+    height: min(850px, calc(100dvh - 4.5rem));
+    max-height: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 2px;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition:
+      opacity 220ms ease,
+      transform 220ms ease,
+      overlay 220ms allow-discrete,
+      display 220ms allow-discrete;
+  }
+
+  #chat-widget[open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    #chat-widget[open] {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+  }
+}
+
+#chat-widget::backdrop {
+  background: transparent;
 }

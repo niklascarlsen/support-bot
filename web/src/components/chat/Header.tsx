@@ -8,7 +8,7 @@ export function Header({
   onClose,
   onNewChat,
 }: {
-  onClose?: () => void;
+  onClose: () => void;
   onNewChat?: () => void;
 }) {
   return (
@@ -19,9 +19,7 @@ export function Header({
           aria-label='Close chat'
           title='Close'
           className={iconButtonClassName}
-          {...(onClose
-            ? {onClick: onClose}
-            : {commandfor: 'chat-modal', command: 'close'})}
+          onClick={onClose}
         >
           <X />
         </button>

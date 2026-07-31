@@ -34,7 +34,7 @@ export function MessageItem({
 
     return (
       <article className='flex justify-start'>
-        <p className='px-1 text-sm text-slate-400'>Looking things up...</p>
+        <p className='px-1 py-2 text-sm text-slate-400 mb-6'>Looking things up...</p>
       </article>
     );
   }
@@ -42,10 +42,10 @@ export function MessageItem({
   return (
     <article className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[80%] rounded-xl px-3.5 py-2 text-sm leading-relaxed ${
+        className={`max-w-[80%] rounded-xl  py-2 text-sm leading-relaxed ${
           isUser
-            ? 'rounded-br-sm bg-black text-white '
-            : 'max-w-full mb-6 text-slate-900'
+            ? 'rounded-br-sm px-3 bg-black text-white '
+            : 'max-w-full mb-6 px-1 text-slate-900'
         }`}
       >
         {isUser ? (

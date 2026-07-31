@@ -1,4 +1,4 @@
-import {Wrapper} from './components/chat/Wrapper';
+import {Wrapper} from './components/chat/Chat';
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import {useEffect, type RefObject} from 'react';
+import {useEffect} from 'react';
 
 let originalBodyStyles: {
   position: string;
@@ -54,25 +54,12 @@ function unlockBodyScroll() {
   originalBodyStyles = null;
 }
 
-/** Locks page scroll while a native <dialog> is open. */
-export function useScrollLock(
-  dialogRef: RefObject<HTMLDialogElement | null>,
-): void {
+// Locks page scroll. State driven, a mode swap coalesces its toggle events away.
+export function useScrollLock(locked: boolean): void {
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+    if (!locked) return;
 
-    const sync = () => {
-      if (dialog.open) lockBodyScroll();
-      else unlockBodyScroll();
-    };
-
-    dialog.addEventListener('toggle', sync);
-    sync();
-
-    return () => {
-      dialog.removeEventListener('toggle', sync);
-      unlockBodyScroll();
-    };
-  }, [dialogRef]);
+    lockBodyScroll();
+    return unlockBodyScroll;
+  }, [locked]);
 }
