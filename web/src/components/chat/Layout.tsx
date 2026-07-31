@@ -23,9 +23,7 @@ export function Layout({onClose}: {onClose?: () => void}) {
           isWaiting={status === 'submitted'}
           isStreaming={status === 'streaming'}
         />
-        {errorText && (
-          <p className='px-4 pb-3 text-sm'>{errorText}</p>
-        )}
+        {errorText && <p className='px-4 pb-3 text-sm'>{errorText}</p>}
       </main>
       <Input
         isBusy={isBusy}

@@ -4,10 +4,12 @@ import {Square} from '@/icons/Square';
 
 export function Input({
   isBusy,
+  disabled,
   onSend,
   onStop,
 }: {
   isBusy?: boolean;
+  disabled?: boolean;
   onSend: (text: string) => void;
   onStop?: () => void;
 }) {
@@ -16,7 +18,7 @@ export function Input({
 
   function submit() {
     const text = value.trim();
-    if (!text || isBusy) return;
+    if (!text || isBusy || disabled) return;
     onSend(text);
     setValue('');
   }
@@ -28,6 +30,7 @@ export function Input({
           type='text'
           value={value}
           maxLength={100}
+          disabled={disabled}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
@@ -36,7 +39,7 @@ export function Input({
             }
           }}
           placeholder='Type your message here...'
-          className='w-full border-0 border-b border-black/20 bg-transparent py-2.5 pr-9 pl-1 text-base md:text-sm font-medium outline-none focus:border-black'
+          className='w-full border-0 border-b border-black/20 bg-transparent py-2.5 pr-9 pl-1 text-base md:text-sm font-medium outline-none focus:border-black disabled:opacity-40 disabled:cursor-not-allowed'
         />
         {isBusy ? (
           <button
@@ -48,7 +51,8 @@ export function Input({
             <Square size={12} />
           </button>
         ) : (
-          hasText && (
+          hasText &&
+          !disabled && (
             <button
               type='button'
               aria-label='Send message'

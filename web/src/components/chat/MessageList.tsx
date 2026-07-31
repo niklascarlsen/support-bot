@@ -24,7 +24,7 @@ export function MessageList({
         />
       ))}
       {isWaiting && (
-        <div className='text-sm text-slate-400 px-1'>Thinking...</div>
+        <div className='text-sm text-slate-400 px-1 animate-pulse'>Thinking...</div>
       )}
     </div>
   );
