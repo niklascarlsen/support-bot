@@ -38,7 +38,7 @@ export function Input({
               submit();
             }
           }}
-          placeholder='Type your message here...'
+          placeholder='Ask anything'
           className='w-full border-0 border-b border-black/20 bg-transparent py-2.5 pr-9 pl-1 text-base md:text-sm font-medium outline-none focus:border-black disabled:opacity-40 disabled:cursor-not-allowed'
         />
         {isBusy ? (

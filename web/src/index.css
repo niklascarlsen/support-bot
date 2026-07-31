@@ -119,3 +119,24 @@ select {
 #chat-widget::backdrop {
   background: transparent;
 }
+
+@keyframes welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.welcome-in {
+  animation: welcome-in 280ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-in {
+    animation: none;
+  }
+}

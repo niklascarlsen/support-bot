@@ -2,6 +2,7 @@ import 'dotenv/config';
 import cors from '@fastify/cors';
 import Fastify from 'fastify';
 import {chatRoutes} from './routes/chat.ts';
+import {widgetRoutes} from './routes/widget.ts';
 
 const port = Number(process.env.PORT ?? 8080);
 const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
@@ -29,6 +30,7 @@ await fastify.register(cors, {
 });
 
 await fastify.register(chatRoutes, {prefix: '/api'});
+await fastify.register(widgetRoutes, {prefix: '/api'});
 
 fastify.get('/health', async () => ({ok: true}));
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
