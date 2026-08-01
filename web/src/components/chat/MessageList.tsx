@@ -1,5 +1,7 @@
 import type {UIMessage} from 'ai';
+import {Diamond} from '@/icons/Diamond';
 import {MessageItem} from './MessageItem';
+import {MessageRow} from './MessageRow';
 
 export function MessageList({
   messages,
@@ -15,7 +17,7 @@ export function MessageList({
     .find((message) => message.role === 'assistant')?.id;
 
   return (
-    <div className='flex flex-col gap-2.5 px-5 py-4'>
+    <div className='flex flex-col px-5'>
       {messages.map((message) => (
         <MessageItem
           key={message.id}
@@ -24,8 +26,10 @@ export function MessageList({
         />
       ))}
       {isWaiting && (
-        <div className='text-sm mb-6 py-2 text-slate-400 px-1 animate-pulse'>
-          Thinking...
+        <div className='mb-6 py-2'>
+          <MessageRow icon={Diamond} className='animate-pulse'>
+            <p>Creating response...</p>
+          </MessageRow>
         </div>
       )}
     </div>

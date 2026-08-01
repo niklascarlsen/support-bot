@@ -58,7 +58,7 @@ export function Wrapper() {
       >
         {warm && (
           <Suspense fallback={<LayoutFallback onClose={close} />}>
-            <Layout onClose={close} />
+            <Layout onClose={close} isOpen={isOpen} />
           </Suspense>
         )}
       </dialog>
