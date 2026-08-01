@@ -1,0 +1,29 @@
+{
+  "entries": [
+    {
+      "topic": "returns",
+      "question": "What is the return policy?",
+      "answer": "You can return anything within 30 days of delivery, as long as it is unused and in its original packaging. Sale items are included. Gift cards cannot be returned."
+    },
+    {
+      "topic": "refunds",
+      "question": "When is the money paid back?",
+      "answer": "The refund goes to the original payment method within 5 working days of the parcel reaching the warehouse. Original shipping is refunded only when the whole order is returned."
+    },
+    {
+      "topic": "damaged items",
+      "question": "What happens if an item arrives damaged?",
+      "answer": "Report it within 14 days of delivery by replying to the order confirmation with a photo. A replacement is sent at no cost, and the damaged item does not have to be sent back."
+    },
+    {
+      "topic": "contact",
+      "question": "How do I reach a person?",
+      "answer": "Email support@prestigeww.lol or call 08 123 45 67 weekdays 09:00 to 17:00. Use for anything these answers do not cover."
+    },
+    {
+      "topic": "delivery times",
+      "question": "How long does delivery take?",
+      "answer": "Orders placed before 14:00 on a working day are dispatched the same day. Delivery inside Sweden takes 2 to 4 working days. The estimated date for one specific order comes from the order itself."
+    }
+  ]
+}

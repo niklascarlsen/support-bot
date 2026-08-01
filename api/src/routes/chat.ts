@@ -66,6 +66,7 @@ export const chatRoutes: FastifyPluginAsync = async (fastify) => {
       system: CHAT_SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages),
       tools,
+      providerOptions: {ollama: {options: {seed: 1, temperature: 0}}},
       stopWhen: isStepCount(5),
       onFinish: ({finishReason, usage, steps}) => {
         const toolCalls = steps.flatMap((step) =>

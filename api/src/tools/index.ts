@@ -4,10 +4,12 @@ import path from 'node:path';
 import {tool} from 'ai';
 import {z} from 'zod';
 
-const ordersPath = path.join(
+const dataDir = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
-  '../data/orders.json',
+  '../data',
 );
+const ordersPath = path.join(dataDir, 'orders.json');
+const faqPath = path.join(dataDir, 'faq.json');
 
 type Order = {
   id: string;
@@ -47,34 +49,31 @@ function toPublicOrder(order: Order) {
   };
 }
 
-// Looks up an order from the local fake store (src/data/orders.json).
-// The model has no order data unless it calls this tool.
-//
-// Both the order id and the email have to match. Both fields are required, so
-// the model cannot even form a lookup on the id alone. The prompt asks for the
-// two values one at a time, but that is only phrasing. This is the check.
+// Looks up an order from the local fake store. Both values are required, a
+// split check would tell a guesser which order ids exist.
 export const getOrder = tool({
   description:
     'Fetch order details by order id and the email the order was placed with. Use this for any question about order status, tracking, items, or delivery. Both values must come from the user. Never invent order data.',
   inputSchema: z.object({
-    // The example used to be PW-88421, which is a real order in the data.
-    // The model treated it as a default and looked it up when the user gave
-    // no id at all. Keep the example clearly fake.
+    // No example id here, the model took the last one as a default.
     orderId: z
       .string()
       .describe(
-        'Order id exactly as the user wrote it, in the form PW-00000. Ask the user for it instead of guessing.',
+        'Order id exactly as the user wrote it, six letters or digits. Ask the user for it instead of guessing.',
       ),
+    // A plain string, not z.email(). A schema miss ends the turn with a
+    // generic error, a wrong address just misses like anything else.
     email: z
-      .email()
+      .string()
       .describe(
         'The email the order was placed with, exactly as the user wrote it. Ask the user for it. Never guess or invent an address.',
       ),
   }),
   execute: async ({orderId, email}) => {
-    const orders = await loadOrders();
     const id = orderId.trim().toUpperCase();
     const mail = email.trim().toLowerCase();
+
+    const orders = await loadOrders();
     const order = orders.find(
       (entry) =>
         entry.id.toUpperCase() === id && entry.email.toLowerCase() === mail,
@@ -97,6 +96,22 @@ export const getOrder = tool({
   },
 });
 
+type FaqEntry = {topic: string; question: string; answer: string};
+
+type FaqFile = {
+  entries: FaqEntry[];
+};
+
+const faq = JSON.parse(await readFile(faqPath, 'utf8')) as FaqFile;
+const faqTopics = faq.entries.map((entry) => entry.topic).join(', ');
+
+export const getFaq = tool({
+  description: `The shop answers about ${faqTopics}. Call this whenever a customer asks how something works or reports a problem such as a damaged item. The answers are the same for every customer, so call it before asking for an order id or an email. Answer only with what it returns.`,
+  inputSchema: z.object({}),
+  execute: () => ({entries: faq.entries}),
+});
+
 export const tools = {
   getOrder,
+  getFaq,
 };
