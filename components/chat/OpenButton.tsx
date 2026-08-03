@@ -7,7 +7,7 @@ export function OpenButton({onOpen}: {onOpen: () => void}) {
       aria-label='Open chat'
       aria-haspopup='dialog'
       onClick={onOpen}
-      className='chat-open-button bg-white rounded-none fixed bottom-18 right-0 p-2 border border-black'
+      className='chat-open-button fixed right-0 bottom-18 rounded-none border border-black bg-white p-2'
     >
       <ChatBubble />
     </button>

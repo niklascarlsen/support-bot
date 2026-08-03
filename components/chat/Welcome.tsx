@@ -13,7 +13,7 @@ export function Welcome({
   animate?: boolean;
 }) {
   return (
-    <div className={`px-5 pt-4 pb-4${animate ? ' welcome-in' : ''}`}>
+    <div className={animate ? 'welcome-in px-5 pt-4 pb-4' : 'px-5 pt-4 pb-4'}>
       <MessageRow icon={Diamond}>
         <div className='flex flex-col gap-3'>
           <p className='text-slate-900'>{welcomeMessage}</p>

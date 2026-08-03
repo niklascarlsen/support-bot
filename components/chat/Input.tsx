@@ -24,7 +24,7 @@ export function Input({
   }
 
   return (
-    <div className='shrink-0 px-4 pb-4 pt-1 md:pb-5'>
+    <div className='shrink-0 px-4 pt-1 pb-4 md:pb-5'>
       <div className='relative'>
         <input
           type='text'
@@ -39,14 +39,14 @@ export function Input({
             }
           }}
           placeholder='Ask anything'
-          className='w-full border-0 border-b border-black/20 bg-transparent py-2.5 pr-9 pl-1 text-base md:text-sm font-medium outline-none focus:border-black disabled:opacity-40 disabled:cursor-not-allowed'
+          className='w-full border-0 border-b border-black/20 bg-transparent py-2.5 pr-9 pl-1 text-base font-medium outline-none focus:border-black disabled:cursor-not-allowed disabled:opacity-40 md:text-sm'
         />
         {isBusy ? (
           <button
             type='button'
             aria-label='Stop generating'
             onClick={onStop}
-            className='absolute right-0 top-[45%] -translate-y-1/2 size-7 grid place-content-center rounded-xs bg-black text-white'
+            className='absolute top-[45%] right-0 grid size-7 -translate-y-1/2 place-content-center rounded-xs bg-black text-white'
           >
             <Square size={12} />
           </button>
@@ -57,7 +57,7 @@ export function Input({
               type='button'
               aria-label='Send message'
               onClick={submit}
-              className='absolute right-0 top-[45%] -translate-y-1/2 size-7 grid place-content-center rounded-xs bg-black text-white'
+              className='absolute top-[45%] right-0 grid size-7 -translate-y-1/2 place-content-center rounded-xs bg-black text-white'
             >
               <ArrowUp size={15} />
             </button>

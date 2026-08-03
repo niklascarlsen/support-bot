@@ -1,28 +1,44 @@
 import {
   convertToModelMessages,
+  createIdGenerator,
   createUIMessageStream,
   createUIMessageStreamResponse,
   isStepCount,
   streamText,
   toUIMessageStream,
+  validateUIMessages,
   type UIMessage,
 } from 'ai';
 import {ollama} from 'ollama-ai-provider-v2';
+import {loadChat, saveChat} from '@/lib/chat-store';
 import {CHAT_MODEL_ID, CHAT_SYSTEM_PROMPT, GUARD_MODEL_ID} from '@/lib/config';
 import {runGuardrails} from '@/lib/guardrails';
 import {logger} from '@/lib/logger';
 import {tools} from '@/lib/tools';
 
-// UIMessage is the useChat format (id, role, parts), not the model format.
+// Client sends only the new turn. History comes from the server store.
 type ChatBody = {
-  messages: UIMessage[];
+  id: string;
+  message: UIMessage;
 };
+
+const generateMessageId = createIdGenerator({prefix: 'msg', size: 16});
 
 // A route handler has no socket address, only headers. Without a proxy the
 // header is missing and everyone shares one bucket, same as today on ::1.
 function clientIdOf(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
   return forwarded?.split(',')[0].trim() || 'local';
+}
+
+// Only the latest user turn is client supplied. Keep text parts so a forged
+// tool result cannot ride in on this message either.
+function toUserMessage(message: UIMessage): UIMessage {
+  return {
+    id: message.id,
+    role: 'user',
+    parts: message.parts.filter((part) => part.type === 'text'),
+  };
 }
 
 // A blocked message is answered, not errored. The refusal is streamed as a
@@ -50,15 +66,40 @@ export async function POST(request: Request) {
     return Response.json({error: 'invalid JSON body'}, {status: 400});
   }
 
-  const {messages} = body ?? {};
+  const {id, message} = body ?? {};
 
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return Response.json({error: 'messages array is required'}, {status: 400});
+  if (typeof id !== 'string' || !message || typeof message !== 'object') {
+    return Response.json({error: 'id and message are required'}, {status: 400});
+  }
+
+  if (message.role !== 'user') {
+    return Response.json(
+      {error: 'message must be a user message'},
+      {status: 400},
+    );
+  }
+
+  if (!id.trim()) {
+    return Response.json({error: 'invalid chat id'}, {status: 400});
+  }
+
+  const messages = [...loadChat(id), toUserMessage(message)];
+
+  let validatedMessages: UIMessage[];
+  try {
+    // Tool input generics are narrower than validateUIMessages expects.
+    validatedMessages = await validateUIMessages({
+      messages,
+      tools: tools as Parameters<typeof validateUIMessages>[0]['tools'],
+    });
+  } catch (error) {
+    logger.warn({error}, 'chat messages failed validation');
+    return Response.json({error: 'invalid messages'}, {status: 400});
   }
 
   const blocked = await runGuardrails({
     clientId: clientIdOf(request),
-    messages,
+    messages: validatedMessages,
   });
 
   if (blocked) {
@@ -82,7 +123,7 @@ export async function POST(request: Request) {
   const result = streamText({
     model: ollama(CHAT_MODEL_ID),
     system: CHAT_SYSTEM_PROMPT,
-    messages: await convertToModelMessages(messages),
+    messages: await convertToModelMessages(validatedMessages),
     tools,
     providerOptions: {ollama: {options: {seed: 1, temperature: 0}}},
     stopWhen: isStepCount(5),
@@ -101,8 +142,17 @@ export async function POST(request: Request) {
     },
   });
 
+  result.consumeStream();
+
   // Model stream to UI chunks for useChat, plus SSE headers.
   return createUIMessageStreamResponse({
-    stream: toUIMessageStream({stream: result.stream}),
+    stream: toUIMessageStream({
+      stream: result.stream,
+      originalMessages: validatedMessages,
+      generateMessageId,
+      onEnd: ({messages: nextMessages}) => {
+        saveChat({chatId: id, messages: nextMessages});
+      },
+    }),
   });
 }

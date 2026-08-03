@@ -12,7 +12,7 @@ export function Header({
   onNewChat?: () => void;
 }) {
   return (
-    <header className='flex shrink-0 justify-between items-center px-2 py-3'>
+    <header className='flex shrink-0 items-center justify-between px-2 py-3'>
       <div>
         <button
           type='button'

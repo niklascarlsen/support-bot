@@ -17,7 +17,7 @@ function LayoutFallback({onClose}: {onClose: () => void}) {
   return (
     <div className='flex h-full min-h-0 flex-col overflow-hidden bg-white'>
       <Header onClose={onClose} />
-      <main className='flex-1 min-h-0 min-w-0'></main>
+      <main className='min-h-0 min-w-0 flex-1'></main>
       <Input disabled onSend={() => {}} />
     </div>
   );

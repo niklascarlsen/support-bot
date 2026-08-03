@@ -16,8 +16,7 @@ export function Layout({
   isOpen: boolean;
   config: WidgetConfig;
 }) {
-  const {messages, sendMessage, status, setMessages, errorText, stop} =
-    useChat();
+  const {messages, sendMessage, status, errorText, stop, newChat} = useChat();
   const isBusy = status === 'submitted' || status === 'streaming';
   const {scrollRef, contentRef, scrollToBottom, isNearBottom, isFollowing} =
     useChatScroll();
@@ -33,12 +32,12 @@ export function Layout({
         onClose={onClose}
         onNewChat={() => {
           if (isBusy) stop();
-          setMessages([]);
+          newChat();
         }}
       />
       <main
         ref={scrollRef}
-        className='flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden overscroll-contain max-md:touch-pan-y outline-black -outline-offset-2'
+        className='min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain -outline-offset-2 outline-black max-md:touch-pan-y'
       >
         <div ref={contentRef}>
           {isOpen && (
