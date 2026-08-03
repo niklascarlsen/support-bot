@@ -1,0 +1,20 @@
+import {WIDGET_CONFIG} from '@/lib/config';
+import {Wrapper} from '@/components/chat/Chat';
+
+export default function Page() {
+  return (
+    <div className='min-h-screen'>
+      <Wrapper config={WIDGET_CONFIG} />
+      <div className='h-[50vh] bg-slate-50'></div>
+      <div className='h-[50vh] bg-slate-100'></div>
+      <div className='h-[25vh] bg-slate-200'></div>
+      <div className='h-[25vh] bg-slate-300'></div>
+      <div className='h-[25vh] bg-slate-400'></div>
+      <div className='h-[25vh] bg-slate-500'></div>
+      <div className='h-[25vh] bg-slate-600'></div>
+      <div className='h-[25vh] bg-slate-700'></div>
+      <div className='h-[25vh] bg-slate-800'></div>
+      <div className='h-[25vh] bg-slate-900'></div>
+    </div>
+  );
+}
