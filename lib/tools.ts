@@ -34,20 +34,16 @@ function toPublicOrder(order: Order) {
   };
 }
 
-// Looks up an order from the local fake store. Both values are required, a
-// split check would tell a guesser which order ids exist.
+// Both values required. A split check would tell a guesser which ids exist.
 export const getOrder = tool({
   description:
     'Fetch order details by order id and the email the order was placed with. Use this for any question about order status, tracking, items, or delivery. Both values must come from the user. Never invent order data.',
   inputSchema: z.object({
-    // No example id here, the model took the last one as a default.
     orderId: z
       .string()
       .describe(
         'Order id exactly as the user wrote it, six letters or digits. Ask the user for it instead of guessing.',
       ),
-    // A plain string, not z.email(). A schema miss ends the turn with a
-    // generic error, a wrong address just misses like anything else.
     email: z
       .string()
       .describe(
@@ -63,8 +59,7 @@ export const getOrder = tool({
         entry.id.toUpperCase() === id && entry.email.toLowerCase() === mail,
     );
 
-    // An unknown id and a real id with the wrong email give the same answer.
-    // Anything else tells a guesser which order ids exist.
+    // Same miss for unknown id and wrong email.
     if (!order) {
       return {
         found: false as const,

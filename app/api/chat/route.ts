@@ -24,8 +24,6 @@ type ChatBody = {
 
 const generateMessageId = createIdGenerator({prefix: 'msg', size: 16});
 
-// A route handler has no socket address, only headers. Without a proxy the
-// header is missing and everyone shares one bucket, same as today on ::1.
 function clientIdOf(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
   return forwarded?.split(',')[0].trim() || 'local';
@@ -59,7 +57,6 @@ function refusalResponse(reason: string) {
 export async function POST(request: Request) {
   let body: ChatBody | undefined;
 
-  // Fastify parsed the body and answered 400 on broken JSON. Next does not.
   try {
     body = (await request.json()) as ChatBody;
   } catch {
@@ -83,7 +80,13 @@ export async function POST(request: Request) {
     return Response.json({error: 'invalid chat id'}, {status: 400});
   }
 
-  const messages = [...loadChat(id), toUserMessage(message)];
+  const userMessage = toUserMessage(message);
+
+  if (!userMessage.parts.length) {
+    return Response.json({error: 'message must contain text'}, {status: 400});
+  }
+
+  const messages = [...loadChat(id), userMessage];
 
   let validatedMessages: UIMessage[];
   try {

@@ -1,10 +1,8 @@
 import 'server-only';
 
-// export const CHAT_MODEL_ID = 'qwen2.5:32b';
 export const CHAT_MODEL_ID = 'qwen3.6:35b';
-// export const CHAT_MODEL_ID = 'gemma4:31b';
 
-// Small model used only for the topic guardrail. Keep it cheap.
+// Topic guard only. Keep it cheap.
 export const GUARD_MODEL_ID = 'llama3.1:8b';
 
 export type WidgetConfig = {
@@ -12,16 +10,14 @@ export type WidgetConfig = {
   iceBreakers: string[];
 };
 
-// Shown in the widget before the first message. An ice breaker is sent as a
-// normal user message. The page passes this down, so it is in the first paint.
+// Passed to the widget on first paint. An ice breaker is a normal user message.
 export const WIDGET_CONFIG: WidgetConfig = {
   welcomeMessage:
     'Hi! I can help with your order. Ask about status, tracking, delivery or returns.',
   iceBreakers: ['Where is my order?', 'What is the return policy?'],
 };
 
-// One wording for turning a customer down. The guard returns it as is, and the
-// chat prompt tells the model to answer with the same words.
+// Shared refusal wording for the guard and the chat prompt.
 export const REFUSAL_MESSAGE =
   "Sorry, I didn't catch that. Try asking a more specific question like 'where is my order' or 'how do I return an order'.";
 

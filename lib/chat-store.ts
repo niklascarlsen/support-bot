@@ -1,10 +1,8 @@
 import 'server-only';
 import type {UIMessage} from 'ai';
+import {appendTrace} from '@/lib/trace-log';
 
-// In-memory store for local dev. Survives across requests in one Node process,
-// but a restart clears everything and multiple instances do not share history.
-// Later replace the Map with durable shared storage (Postgres or Redis). Keep
-// loadChat and saveChat as the API so the chat route stays the same.
+// In-memory per process. Lost on restart, not shared across replicas.
 const chats = new Map<string, UIMessage[]>();
 
 export function loadChat(id: string): UIMessage[] {
@@ -18,5 +16,6 @@ export function saveChat({
   chatId: string;
   messages: UIMessage[];
 }): void {
+  appendTrace(chatId, messages.slice(chats.get(chatId)?.length ?? 0));
   chats.set(chatId, messages);
 }
