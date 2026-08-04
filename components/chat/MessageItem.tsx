@@ -50,7 +50,7 @@ export function MessageItem({
       <MessageRow
         icon={isUser ? Square : Diamond}
         isUser={isUser}
-        className={isUser ? 'max-w-[80%]' : ''}
+        className={isUser ? 'max-w-[80%] wrap-break-word' : 'max-w-[95%]'}
       >
         <div>
           {isUser ? (

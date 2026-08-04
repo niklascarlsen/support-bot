@@ -159,10 +159,11 @@ test('the grounding judge agrees with the hand labels', async () => {
   const disagreements: string[] = [];
 
   for (const sample of SAMPLES) {
-    const {failures} = await judgeGrounding(sample);
-    const verdict = failures.length ? 'ungrounded' : 'grounded';
+    const {verdict} = await judgeGrounding(sample);
 
-    if (verdict !== sample.label) {
+    if (verdict === 'error') {
+      disagreements.push(`judge did not answer: ${sample.reply}`);
+    } else if ((verdict === 'FAIL') !== (sample.label === 'ungrounded')) {
       disagreements.push(
         `called ${sample.label} reply ${verdict}: ${sample.reply}`,
       );

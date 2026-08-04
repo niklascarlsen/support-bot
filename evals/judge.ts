@@ -3,7 +3,7 @@ import {generateText, Output} from 'ai';
 import {ollama} from 'ollama-ai-provider-v2';
 import type {ToolCall} from '@/evals/types';
 
-export const JUDGE_MODEL_ID = 'qwen2.5:32b';
+export const JUDGE_MODEL_ID = process.env.JUDGE_MODEL_ID ?? 'qwen2.5:32b';
 
 const JUDGE_PROMPT = `You check whether a support reply is grounded in the data it was given.
 

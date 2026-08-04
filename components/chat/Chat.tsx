@@ -67,7 +67,7 @@ export function Wrapper({config}: {config: WidgetConfig}) {
         aria-labelledby='chat-widget-title'
       >
         <Suspense fallback={<LayoutFallback onClose={close} />}>
-          <Layout onClose={close} isOpen={isOpen} config={config} />
+          <Layout onClose={close} config={config} />
         </Suspense>
       </dialog>
     </>

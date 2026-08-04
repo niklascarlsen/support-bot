@@ -1,9 +1,8 @@
 import 'server-only';
 
-export const CHAT_MODEL_ID = 'qwen3.6:35b';
+export const CHAT_MODEL_ID = process.env.CHAT_MODEL_ID ?? 'qwen3.6:35b';
 
-// Topic guard only. Keep it cheap.
-export const GUARD_MODEL_ID = 'llama3.1:8b';
+export const GUARD_MODEL_ID = process.env.GUARD_MODEL_ID ?? 'llama3.1:8b';
 
 export type WidgetConfig = {
   welcomeMessage: string;

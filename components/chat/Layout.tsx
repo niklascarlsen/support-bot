@@ -9,11 +9,9 @@ import {ScrollButton} from './ScrollButton';
 
 export function Layout({
   onClose,
-  isOpen,
   config,
 }: {
   onClose: () => void;
-  isOpen: boolean;
   config: WidgetConfig;
 }) {
   const {messages, sendMessage, status, errorText, stop, newChat} = useChat();
@@ -40,14 +38,12 @@ export function Layout({
         className='min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain -outline-offset-2 outline-black max-md:touch-pan-y'
       >
         <div ref={contentRef}>
-          {isOpen && (
-            <Welcome
-              welcomeMessage={config.welcomeMessage}
-              iceBreakers={messages.length === 0 ? config.iceBreakers : []}
-              onPick={send}
-              animate={messages.length === 0}
-            />
-          )}
+          <Welcome
+            welcomeMessage={config.welcomeMessage}
+            iceBreakers={messages.length === 0 ? config.iceBreakers : []}
+            onPick={send}
+            animate={messages.length === 0}
+          />
           <MessageList
             messages={messages}
             isWaiting={status === 'submitted'}
