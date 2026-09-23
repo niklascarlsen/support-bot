@@ -1,4 +1,5 @@
 import {fileURLToPath} from 'node:url';
+import {loadEnv} from 'vite';
 import {defineConfig} from 'vitest/config';
 
 export default defineConfig({
@@ -14,6 +15,9 @@ export default defineConfig({
   ssr: {resolve: {conditions: ['react-server', 'node', 'import', 'default']}},
   test: {
     environment: 'node',
+    // next loads .env for dev and start, vitest does not, and the evals need
+    // TYPESAFE_API_KEY to reach the guard. Empty prefix means every key.
+    env: loadEnv('', process.cwd(), ''),
     // A test sits next to what it tests, so pick them up wherever they are.
     // npm test excludes evals/, that is the only split that matters here,
     // one half needs a model and the other does not.

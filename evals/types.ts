@@ -2,7 +2,7 @@
 
 // Grouped so input/found cannot sit without a tool name.
 export type ToolExpectation = {
-  name: 'getOrder' | 'getFaq';
+  name: 'getOrder' | 'getFaq' | 'getShopInfo';
   // Extra fields on the real call are ignored.
   input?: Record<string, unknown>;
   // Undefined means do not care.
@@ -23,7 +23,7 @@ export type ReplyExpectation = {
 
 // Every field optional. A case only states what it cares about.
 export type Expectation = {
-  // Defaults to model. Guard blocks never reach saveChat.
+  // Defaults to model.
   answeredBy?: 'model' | 'guard';
   // 'none' means no tool may run.
   tool?: ToolExpectation | 'none';
@@ -60,4 +60,7 @@ export type TurnResult = {
   text: string;
   toolCalls: ToolCall[];
   saved: number;
+  // Which check wrote the turn, or null when the model did.
+  guardrail: string | null;
+  degraded: boolean;
 };

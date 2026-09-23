@@ -12,7 +12,7 @@ import {
 import {ollama} from 'ollama-ai-provider-v2';
 import {loadChat, saveChat} from '@/lib/chat-store';
 import {CHAT_MODEL_ID, CHAT_SYSTEM_PROMPT, GUARD_MODEL_ID} from '@/lib/config';
-import {runGuardrails} from '@/lib/guardrails';
+import {runGuardrails, type GuardrailBlock} from '@/lib/guardrails';
 import {logger} from '@/lib/logger';
 import {tools} from '@/lib/tools';
 
@@ -23,6 +23,8 @@ type ChatBody = {
 };
 
 const generateMessageId = createIdGenerator({prefix: 'msg', size: 16});
+
+const REFUSAL_WORD_MS = 18;
 
 function clientIdOf(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
@@ -39,14 +41,43 @@ function toUserMessage(message: UIMessage): UIMessage {
   };
 }
 
-// A blocked message is answered, not errored. The refusal is streamed as a
-// normal assistant turn so it stays in the transcript like any other reply.
-function refusalResponse(reason: string) {
+// A blocked message is answered, not errored. Storing the turn is what lets a
+// later one see the block already happened.
+function refusalResponse({
+  chatId,
+  messages,
+  blocked,
+}: {
+  chatId: string;
+  messages: UIMessage[];
+  blocked: GuardrailBlock;
+}) {
+  const id = generateMessageId();
+  // degraded marks an outage, so a dead guard cannot pass for a real block.
+  const refusal: UIMessage = {
+    id,
+    role: 'assistant',
+    metadata: {guardrail: blocked.guardrail, degraded: blocked.degraded},
+    parts: [{type: 'text', text: blocked.reason}],
+  };
+
+  saveChat({chatId, messages: [...messages, refusal]});
+
   const stream = createUIMessageStream<UIMessage>({
-    execute: ({writer}) => {
-      const id = 'guardrail-refusal';
+    // Word by word, or it reads as a different kind of message to the one
+    // streaming next to it.
+    execute: async ({writer}) => {
       writer.write({type: 'text-start', id});
-      writer.write({type: 'text-delta', id, delta: reason});
+
+      for (const [index, word] of blocked.reason.split(' ').entries()) {
+        writer.write({
+          type: 'text-delta',
+          id,
+          delta: index ? ` ${word}` : word,
+        });
+        await new Promise((resolve) => setTimeout(resolve, REFUSAL_WORD_MS));
+      }
+
       writer.write({type: 'text-end', id});
     },
   });
@@ -116,10 +147,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Rate limiting is the one block that is an error, not an answer.
+    // Rate limiting is the one block that errors, so the one never stored.
     return blocked.guardrail === 'rate'
       ? Response.json({error: blocked.reason}, {status: 429})
-      : refusalResponse(blocked.reason);
+      : refusalResponse({chatId: id, messages: validatedMessages, blocked});
   }
 
   // streamText handles the Ollama call, chunk parsing, and tool loop.

@@ -18,9 +18,6 @@ const MARKDOWN_PATTERNS = [
 
 const EMOJI = /\p{Emoji_Presentation}|\uFE0F/u;
 
-// Model turn stores 2 messages. Guard block stores 0.
-const STORED_PER_LAYER = {model: 2, guard: 0};
-
 function checkPlainText(text: string): string[] {
   const found = MARKDOWN_PATTERNS.filter((entry) =>
     entry.pattern.test(text),
@@ -119,11 +116,18 @@ export async function checkTurn(
     failures.push(`status was ${result.status}, expected ${expectedStatus}`);
   }
 
-  const answeredBy = expect.answeredBy ?? 'model';
+  // An outage blocks every message, so a green run would mean nothing.
+  if (result.degraded) {
+    failures.push('the topic guard errored instead of deciding');
+  }
 
-  if (result.saved !== STORED_PER_LAYER[answeredBy]) {
-    const actual = result.saved ? 'the model' : 'a guardrail';
-    failures.push(`expected ${answeredBy} to answer, ${actual} did`);
+  const answeredBy = expect.answeredBy ?? 'model';
+  const actual = result.guardrail ? 'guard' : 'model';
+
+  if (actual !== answeredBy) {
+    failures.push(
+      `expected ${answeredBy} to answer, ${result.guardrail ?? 'the model'} did`,
+    );
   }
 
   const checked = [

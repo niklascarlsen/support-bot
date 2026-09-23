@@ -25,7 +25,7 @@ function toCaseReport(entry: RunEntry) {
       reply: result.text,
       toolCalls: result.toolCalls.map((call) => call.name),
       // Guard blocks never save, so the store tells the layers apart.
-      answeredBy: result.saved ? 'model' : 'guard',
+      answeredBy: result.guardrail ?? 'model',
       judge: entry.judgePerTurn[index] ?? null,
       failures: entry.failuresPerTurn[index] ?? [],
     })),
