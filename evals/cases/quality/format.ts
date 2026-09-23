@@ -7,8 +7,6 @@ export const formatCases: EvalCase[] = [
     id: 'quality.format.item_list_plain',
     name: 'an item list stays plain sentences',
     tags: ['quality:format', 'capability:order'],
-    knownFailure:
-      'an item list comes back as markdown bullets. Only reproduces when the reply is a list, prose replies stay plain',
     turns: [
       {
         user: `List everything in order ${shipped.id}, email ${shipped.email}`,

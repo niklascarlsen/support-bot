@@ -56,6 +56,15 @@ function toolCallsFrom(messages: UIMessage[]): ToolCall[] {
   );
 }
 
+function markerOf(messages: UIMessage[]) {
+  const assistant = messages.find((message) => message.role === 'assistant');
+
+  return (assistant?.metadata ?? {}) as {
+    guardrail?: string;
+    degraded?: boolean;
+  };
+}
+
 async function readTurn(
   response: Response,
   chatId: string,
@@ -69,12 +78,16 @@ async function readTurn(
     ? await readStreamText(response)
     : await response.text();
   const after = loadChat(chatId);
+  const added = after.slice(savedBefore);
+  const marker = markerOf(added);
 
   return {
     status: response.status,
     text,
-    toolCalls: toolCallsFrom(after.slice(savedBefore)),
-    saved: after.length - savedBefore,
+    toolCalls: toolCallsFrom(added),
+    saved: added.length,
+    guardrail: marker.guardrail ?? null,
+    degraded: marker.degraded === true,
   };
 }
 

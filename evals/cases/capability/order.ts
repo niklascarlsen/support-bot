@@ -61,19 +61,16 @@ export const orderCases: EvalCase[] = [
     ],
   },
   {
-    id: 'order.lookup.ask_email_first',
-    name: 'with nothing given it asks for the email and not the id',
+    id: 'order.lookup.asks_for_both',
+    name: 'with nothing given it asks for the email and the id together',
     tags: ['capability:order'],
     turns: [
       {
+        // One reply, not two. The tool needs both anyway.
         user: 'Where is my order?',
         expect: {
           tool: 'none',
-          reply: {
-            includes: ['email'],
-            excludes: ['order id', 'order number'],
-            plainText: true,
-          },
+          reply: {includes: ['email', 'order id'], plainText: true},
         },
       },
     ],
@@ -87,7 +84,7 @@ export const orderCases: EvalCase[] = [
         user: 'I want to check on my order',
         expect: {
           tool: 'none',
-          reply: {includes: ['email'], excludes: ['order id']},
+          reply: {includes: ['email', 'order id']},
         },
       },
       {
@@ -215,8 +212,6 @@ export const orderCases: EvalCase[] = [
     id: 'order.lookup.items',
     name: 'it reports the items when asked for them',
     tags: ['capability:order', 'tool:getOrder'],
-    knownFailure:
-      'item list comes back as markdown bullets. Same format finding as quality.format.item_list_plain',
     turns: [
       {
         user: `What is in order ${shipped.id}? My email is ${shipped.email}`,

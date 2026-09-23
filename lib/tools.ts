@@ -86,7 +86,26 @@ export const getFaq = tool({
   execute: () => ({entries: faqEntries}),
 });
 
+// What this chat covers. The model has no other source for its own scope,
+// same rule as every other fact about the shop.
+export const getShopInfo = tool({
+  description:
+    'What this support chat can and cannot help with. Call this when the customer asks what you can do or who you are. Answer only with what it returns.',
+  inputSchema: z.object({}),
+  execute: () => ({
+    covers: [
+      'looking up an order, its status, carrier, tracking, items and delivery date, given the order id and the email the order was placed with',
+      `the written shop answers about ${faqTopics}`,
+    ],
+    doesNotCover: [
+      'placing, changing or cancelling an order',
+      'anything that is not this shop',
+    ],
+  }),
+});
+
 export const tools = {
   getOrder,
   getFaq,
+  getShopInfo,
 };
